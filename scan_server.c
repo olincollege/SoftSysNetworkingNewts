@@ -6,7 +6,7 @@ char** scan_server()
     int max_rsp, num_rsp;
     int dev_id, sock, len, flags;
     int i;
-    char addr[19] = { 0 };
+    char addr[19]= {0};
     char name[248] = { 0 };
 
     dev_id = hci_get_route(NULL);
@@ -23,7 +23,8 @@ char** scan_server()
     
     num_rsp = hci_inquiry(dev_id, len, max_rsp, NULL, &ii, flags);
     if( num_rsp < 0 ) perror("hci_inquiry");
-    char **device_list = malloc(num_rsp *sizeof(addr));
+    
+    char **device_list = (char**)malloc(num_rsp *sizeof(addr));
 
     for (i = 0; i < num_rsp; i++) {
         ba2str(&(ii+i)->bdaddr, addr);
@@ -31,10 +32,9 @@ char** scan_server()
         if (hci_read_remote_name(sock, &(ii+i)->bdaddr, sizeof(name), 
             name, 0) < 0)
         strcpy(name, "[unknown]");
-        device_list[i] = addr;
-        printf("%s  %s\n", device_list[i], name);
+        device_list[i]= strdup(addr);
+        printf("%d  %s  %s\n",i, device_list[i], name);
     }
-    printf("%s\n", device_list[0]);
 
     free( ii );
     close( sock );

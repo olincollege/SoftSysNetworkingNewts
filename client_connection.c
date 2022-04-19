@@ -9,8 +9,9 @@
 int client_connection(char* MAC)
 {
     struct sockaddr_rc addr = { 0 };
-    int s, status;
-    
+    int s, status, bytes_read, client;
+    char buf[1024] = { 0 };
+    char message[100];
     //char dest[18] = MAC; //CHANGE THIS TO YOUR BLUETOOTH MAC ADDRESS
     // allocate a socket
     s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
@@ -19,13 +20,18 @@ int client_connection(char* MAC)
     addr.rc_family = AF_BLUETOOTH;
     addr.rc_channel = (uint8_t) 1;
     str2ba( MAC, &addr.rc_bdaddr );
-
+    printf("Trying to Connect\n");
     // connect to server
     status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
-
+    printf("Connected\n");
     // send a message
     if( status == 0 ) {
-        status = write(s, "hello!", 6);
+        while(1)){
+            fgets(message, sizeof(message), stdin);
+            printf("Message:%s",message);
+            status = write(s, message, sizeof(message));
+                printf("Sent\n");
+            }
     }
 
     if( status < 0 ) perror("uh oh");
