@@ -23,7 +23,7 @@ char** scan_server()
     
     num_rsp = hci_inquiry(dev_id, len, max_rsp, NULL, &ii, flags);
     if( num_rsp < 0 ) perror("hci_inquiry");
-    char **device_list = malloc(num_rsp * sizeof(addr));
+    char **device_list = malloc(num_rsp *sizeof(addr));
 
     for (i = 0; i < num_rsp; i++) {
         ba2str(&(ii+i)->bdaddr, addr);
@@ -34,6 +34,7 @@ char** scan_server()
         device_list[i] = addr;
         printf("%s  %s\n", device_list[i], name);
     }
+    printf("%s\n", device_list[0]);
 
     free( ii );
     close( sock );
