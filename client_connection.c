@@ -28,14 +28,19 @@ int client_connection(char* MAC)
     if( status == 0 ) {
         while(1){
             fgets(message, sizeof(message), stdin);
-            printf("Message:%s",message);
+           
             status = write(s, message, sizeof(message));
                 printf("Sent\n");
-            }
+            bytes_read = read(s, buf, sizeof(buf));
+            if( bytes_read > 0 ){
+            printf("Vedaant %s\n", buf);
+        }
     }
-
-    if( status < 0 ) perror("uh oh");
-
+    }
+    if( status < 0 ){ 
+    perror("uh oh");
+    }
     close(s);
+
     return 0;
 }

@@ -10,8 +10,8 @@ int main(int argc, char **argv)
     char buf[1024] = { 0 };
     int s, client, bytes_read;
     socklen_t opt = sizeof(rem_addr);
-    char current_msg[100];
-
+    char message[100];
+   int status=0;
     // allocate socket
     s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 
@@ -39,7 +39,10 @@ int main(int argc, char **argv)
         if( bytes_read > 0 ) {
             printf("Charlie: %s\n", buf);
         }
-        printf("Hey!\n");
+        fgets(message, sizeof(message), stdin);
+           
+        status = write(s, message, sizeof(message));
+        printf("Sent\n");
         // int status = 0;
         // // send a message
         // if(status == 0) {
