@@ -33,25 +33,18 @@ int main(int argc, char **argv)
     memset(buf, 0, sizeof(buf));
 
 
-    while (1) {
+    //while (1) {
         // read data from the client
         bytes_read = read(client, buf, sizeof(buf));
         if( bytes_read > 0 ) {
             printf("Charlie: %s\n", buf);
         }
-        fgets(message, sizeof(message), stdin);
-           
-        status = write(s, message, sizeof(message));
+        scanf("%s",message, sizeof(message));
+        status = write(client, message, sizeof(message));
         printf("Sent\n");
-        // int status = 0;
-        // // send a message
-        // if(status == 0) {
-        //     printf("Enter message: ");
-        //     scanf("%s\n", current_msg);
-        //     status = write(s, current_msg, sizeof(current_msg));
-        // }
+
         
-    }
+    //}
 
     // close connection
     close(client);
