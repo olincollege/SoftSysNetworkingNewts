@@ -16,6 +16,6 @@ int main() {
     // parent process because return value non-zero.
     else
         client_connection(my_scan[i]);
-
+    
     return 0;
 }

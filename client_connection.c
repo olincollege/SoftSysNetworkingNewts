@@ -26,7 +26,7 @@ int client_connection(char* MAC)
     printf("Connected\n");
     // send a message
     if( status == 0 ) {
-        while(1)){
+        while(1){
             fgets(message, sizeof(message), stdin);
             printf("Message:%s",message);
             status = write(s, message, sizeof(message));
