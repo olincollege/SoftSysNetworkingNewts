@@ -34,23 +34,22 @@ int main(int argc, char **argv)
 
 
     while (1) {
+        // status = write(client, message, sizeof(message));
         // read data from the client
+        // bytes_read = read(client, buf, sizeof(buf));
+        // if( bytes_read > 0 ) {
+        //     printf("Charlie: %s\n", buf);
+        // }
+        printf("Vedaant: ");
+        scanf("%s", message);
+           
+        status = write(client, message, sizeof(message));
+        printf("Sent\n");
+
         bytes_read = read(client, buf, sizeof(buf));
         if( bytes_read > 0 ) {
             printf("Charlie: %s\n", buf);
         }
-        fgets(message, sizeof(message), stdin);
-           
-        status = write(s, message, sizeof(message));
-        printf("Sent\n");
-        // int status = 0;
-        // // send a message
-        // if(status == 0) {
-        //     printf("Enter message: ");
-        //     scanf("%s\n", current_msg);
-        //     status = write(s, current_msg, sizeof(current_msg));
-        // }
-        
     }
 
     // close connection
