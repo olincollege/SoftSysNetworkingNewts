@@ -35,16 +35,21 @@ int main(int argc, char **argv)
 
     while (1) {
         // read data from the client
+        // bytes_read = read(client, buf, sizeof(buf));
+        // if( bytes_read > 0 ) {
+        //     printf("Charlie: %s\n", buf);
+        // }
+        printf("Vedaant: ");
+        scanf("%s", message);
+           
+        status = write(client, message, sizeof(message));
+        printf("Sent\n");
+
         bytes_read = read(client, buf, sizeof(buf));
         if( bytes_read > 0 ) {
             printf("Charlie: %s\n", buf);
         }
-        scanf("%s",message, sizeof(message));
-        status = write(client, message, sizeof(message));
-        printf("Sent\n");
-
-        
-    //}
+    }
 
     // close connection
     close(client);
