@@ -29,14 +29,14 @@ int client_connection(char* MAC)
         printf("Connected\n");
         while(1){
             
-            bytes_read = read(s, buf, sizeof(buf));
-            if( bytes_read > 0 ){
-            printf("Vedaant: %s\n", buf);
+            if( read(s, buf, sizeof(buf)) > 0 ){
+            printf("Vedaant: %s\n", buf);}
+
             printf("Charlie: ");
             scanf("%s",  message);
-            status = write(s, message, sizeof(message));
+             if( write(s, message, sizeof(message)) < 0 ){ 
+                perror("uh oh");}
         }
-    }
     }
     if( status < 0 ){ 
     perror("uh oh");
