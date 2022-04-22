@@ -34,16 +34,14 @@ int main(int argc, char **argv)
 
 
     while (1) {
-        // read data from the client
-        // bytes_read = read(client, buf, sizeof(buf));
-        // if( bytes_read > 0 ) {
-        //     printf("Charlie: %s\n", buf);
-        // }
+        
         printf("Vedaant: ");
         scanf("%s", message);
            
-        status = write(client, message, sizeof(message));
-        printf("Sent\n");
+        if (write(client, message, sizeof(message)) < 0) {
+            perror("Uh oh");
+        }
+        // printf("Sent\n");
 
         bytes_read = read(client, buf, sizeof(buf));
         if( bytes_read > 0 ) {
