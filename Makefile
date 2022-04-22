@@ -8,4 +8,4 @@ server: server.c server.h
 	gcc server.c -c -lbluetooth
 
 main: client_connection.o client_connection.h main.c scan_server.c scan_server.h
-	gcc main.c client_connection.o scan_server.o -o main -lbluetooth
+	gcc main.c client_connection.o scan_server.o -o main -lbluetooth -pthread
