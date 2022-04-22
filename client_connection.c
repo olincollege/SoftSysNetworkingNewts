@@ -10,7 +10,7 @@ int client_connection(char* MAC)
 {
     struct sockaddr_rc addr = { 0 };
     int s, status, bytes_read, client;
-    char buf[1024] = { 0 };
+    char buf[1024];
     char message[100];
     //char dest[18] = MAC; //CHANGE THIS TO YOUR BLUETOOTH MAC ADDRESS
     // allocate a socket
@@ -23,17 +23,18 @@ int client_connection(char* MAC)
     printf("Trying to Connect\n");
     // connect to server
     status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
-    printf("Connected\n");
+    
     // send a message
     if( status == 0 ) {
+        printf("Connected\n");
         while(1){
-            fgets(message, sizeof(message), stdin);
-           
-            status = write(s, message, sizeof(message));
-                printf("Sent\n");
+            
             bytes_read = read(s, buf, sizeof(buf));
             if( bytes_read > 0 ){
-            printf("Vedaant %s\n", buf);
+            printf("Vedaant: %s\n", buf);
+            printf("Charlie: ");
+            scanf("%s",  message);
+            status = write(s, message, sizeof(message));
         }
     }
     }
