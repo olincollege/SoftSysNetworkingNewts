@@ -4,9 +4,89 @@
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
 #include <stdlib.h>
+#include <gtk/gtk.h>
 
 #include <pthread.h>
 #include <stdio.h>
+
+
+int client;
+pid_t pid; 
+
+// Create widget for email entry.
+    GtkWidget *showEmail; 
+
+GtkWidget *emailLabel, *emailEntry, *signupBtn, *grid;
+
+gchar buffer[10000];
+
+void signup_button_clicked(GtkWidget *wid,gpointer data)
+ {  
+    // Get the text from the email entry 
+    gchar* emailData = gtk_entry_get_text(GTK_ENTRY(emailEntry)); 
+
+    // Append previous data to current data
+    // strcpy(buffer, "hello");
+    gchar buffer2[100];
+    strcat(buffer2, emailData);
+    strcat(buffer2, "\n");
+    strcat(buffer, emailData);
+    strcat(buffer, "\n");
+    g_printf("%s\n", buffer);
+
+    if (write(client, buffer2, sizeof(buffer2)) < 0) {
+            perror("Uh oh");
+    }
+    // Print out the text sent to data to the label emailData
+    gtk_label_set_text(GTK_LABEL(data), (const gchar *) buffer); 
+    
+
+    // Set the email entry box to blank
+    gtk_entry_set_text(GTK_ENTRY(emailEntry),""); 
+ } 
+
+static void activate (GtkApplication* app, gpointer user_data)
+ {  
+     // Create a new window
+    GtkWidget *window;
+    window = gtk_application_window_new (app);
+
+    // Set title and size
+    gtk_window_set_title (GTK_WINDOW (window), "User Input");
+    gtk_window_set_default_size (GTK_WINDOW (window), 500, 400);
+
+
+    // Create an entry for email.
+    emailEntry = gtk_entry_new(); 
+
+    // Create button called Send
+    signupBtn = gtk_button_new_with_label("Send");
+
+    // Create a starting label
+    showEmail = gtk_label_new("Welcome to your chat!\n");
+
+    // Set alignment to left (1.0 for right)
+    gtk_label_set_xalign (showEmail, 0.0);
+
+
+    // Send the value when signupBtn is clicked to call signup_button_clicked
+    g_signal_connect(signupBtn,"clicked",G_CALLBACK(signup_button_clicked),showEmail);
+
+    // Create a new GTK box
+    GtkWidget *box; box = gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
+
+    // Place all the values in the box one after the other.
+    gtk_box_pack_start(GTK_BOX(box),showEmail,FALSE,FALSE,0); 
+    gtk_box_pack_end(GTK_BOX(box),signupBtn,FALSE,FALSE,0); 
+    gtk_box_pack_end(GTK_BOX(box),emailEntry,FALSE,FALSE,0);
+
+
+    // Add box to the window
+    gtk_container_add(GTK_CONTAINER(window),box); 
+
+    // Display window
+    gtk_widget_show_all (window);
+ } 
 
 void *chat_read(void *my_client)
 {   
@@ -19,12 +99,14 @@ void *chat_read(void *my_client)
             perror("Uh oh");
         }
 
+
     }
    pthread_exit(NULL);
 }
 
 void *chat_write(void *my_client)
-{
+{   
+    
     char buf[1024] = { 0 };
     int client;
     client = (int)my_client;
@@ -34,20 +116,30 @@ void *chat_write(void *my_client)
         if( bytes_read > 0 ) {
             printf("Charlie: ");
             printf("%s", buf);
+
+            // Append previous data to current data
+            // strcpy(buffer, "hello");
+            strcat(buf, "\n");
+            strcat(buffer, buf);
+            strcat(buffer, "\n");
+            g_printf("%s\n", buffer);
+
+            // Print out the text sent to data to the label emailData
+            gtk_label_set_text(GTK_LABEL(showEmail), (const gchar *) buffer); 
         }
    }
-   pthread_exit(NULL);
 }
 
 
 int main(int argc, char **argv)
-{
-    pthread_t thread_a;
-    pthread_t thread_b;
-    int rc;
+{   
+
+    // pthread_t thread_a;
+    // pthread_t thread_b;
+    // int rc;
     struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
     char buf[1024] = { 0 };
-    int s, client, bytes_read;
+    int s, bytes_read;
     socklen_t opt = sizeof(rem_addr);
     char message[100];
    int status=0;
@@ -74,19 +166,33 @@ int main(int argc, char **argv)
     char i;
     scanf("%c", &i);
     if (i==y){
-        rc = pthread_create(&thread_a, NULL, chat_read, (void *)client);
-        if (rc){
-            printf("ERROR; return code from pthread_create() is %d\n", rc);
-            exit(-1);
+        pid = fork();
+        if (pid == 0){
+            chat_write(client);
         }
-        rc = pthread_create(&thread_b, NULL, chat_write, (void *)client);
-        if (rc){
-            printf("ERROR; return code from pthread_create() is %d\n", rc);
-            exit(-1);
-            }
-            pthread_exit(NULL);
-            }
-    else{
+        else {
+            GtkApplication *app;
+            int status;
+            app = gtk_application_new ("com.hackthedeveloper", G_APPLICATION_FLAGS_NONE);
+            g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
+            status = g_application_run(G_APPLICATION(app), argc, argv);
+            g_object_unref (app);
+        }
+        
+        // rc = pthread_create(&thread_a, NULL, chat_read, (void *)client);
+        // if (rc){
+        //     printf("ERROR; return code from pthread_create() is %d\n", rc);
+        //     exit(-1);
+        // }
+        // rc = pthread_create(&thread_b, NULL, chat_write, (void *)client);
+        // if (rc){
+        //     printf("ERROR; return code from pthread_create() is %d\n", rc);
+        //     exit(-1);
+        //     }
+        //     pthread_exit(NULL);
+        //     }
+    }
+    else{ 
         char message[11]="No connect";
         if (write(client, message, sizeof(message)) < 0) {
             perror("Uh oh");
@@ -97,3 +203,4 @@ int main(int argc, char **argv)
     close(s);
     return 0;
 }
+

@@ -19,7 +19,10 @@ void *Read(void *s){
                 printf("Connection denied\n");
                 pthread_exit(NULL);
             }
-            printf("Vedaant: %s", buf);}
+           // *buf += 2; //removes first two charcters
+           char *b = &buf[2];
+            printf("%s",b);
+            }
     }
     pthread_exit(NULL);
     exit(1);
