@@ -13,9 +13,6 @@
 int client;
 pid_t pid; 
 
-// Create widget for email entry.
-GtkWidget *showEmail; 
-
 GtkWidget *emailLabel, *emailEntry, *signupBtn, *grid;
 
 gchar buffer[10000];
@@ -55,6 +52,8 @@ static void activate (GtkApplication* app, gpointer user_data)
     gtk_window_set_title (GTK_WINDOW (window), "User Input");
     gtk_window_set_default_size (GTK_WINDOW (window), 500, 400);
 
+    // Create widget for email entry.
+    GtkWidget *showEmail; 
 
     // Create an entry for email.
     emailEntry = gtk_entry_new(); 
@@ -125,7 +124,7 @@ void *chat_write(void *my_client)
             g_printf("%s\n", buffer);
 
             // Print out the text sent to data to the label emailData
-            gtk_label_set_text(GTK_LABEL(showEmail), (const gchar *) buffer); 
+            gtk_label_set_text(GTK_LABEL(data), (const gchar *) buffer); 
         }
    }
 }
