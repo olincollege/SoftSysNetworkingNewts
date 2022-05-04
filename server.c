@@ -38,6 +38,16 @@ void *chat_write(void *my_client)
    }
    pthread_exit(NULL);
 }
+void *close_sock(void *my_client)
+{
+    int client;
+    client = (int)my_client;
+    char message[100]="I don't want to connect";
+    if (write(client, message, sizeof(message)) < 0) {
+            perror("Uh oh");
+        }
+   pthread_exit(NULL);
+}
 
 
 int main(int argc, char **argv)
@@ -64,26 +74,35 @@ int main(int argc, char **argv)
     // put socket into listening mode
     listen(s, 1);
 
+    char y='y';
     // accept one connection
     client = accept(s, (struct sockaddr *)&rem_addr, &opt);
-
     ba2str( &rem_addr.rc_bdaddr, buf );
-    fprintf(stderr, "accepted connection from %s\n", buf);
+    fprintf(stderr, "Connection from %s\n", buf);
     memset(buf, 0, sizeof(buf));
-
-      rc = pthread_create(&thread_a, NULL, chat_read, (void *)client);
-      if (rc){
-         printf("ERROR; return code from pthread_create() is %d\n", rc);
-         exit(-1);
-      }
-      rc = pthread_create(&thread_b, NULL, chat_write, (void *)client);
-      if (rc){
-         printf("ERROR; return code from pthread_create() is %d\n", rc);
-         exit(-1);
-      }
-   pthread_exit(NULL);
-
-    // close connection
+    printf("Do you want to connect?(y/n) ");
+    char i;
+    scanf("%c", &i);
+    if (i==y){
+        rc = pthread_create(&thread_a, NULL, chat_read, (void *)client);
+        if (rc){
+            printf("ERROR; return code from pthread_create() is %d\n", rc);
+            exit(-1);
+        }
+        rc = pthread_create(&thread_b, NULL, chat_write, (void *)client);
+        if (rc){
+            printf("ERROR; return code from pthread_create() is %d\n", rc);
+            exit(-1);
+            }
+            pthread_exit(NULL);
+            }
+    else{
+        char message[11]="No connect";
+        if (write(client, message, sizeof(message)) < 0) {
+            perror("Uh oh");
+        }
+        printf("Closing\n");
+    }
     close(client);
     close(s);
     return 0;
