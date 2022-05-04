@@ -14,13 +14,12 @@ int client;
 pid_t pid; 
 
 // Create widget for email entry.
-   
+
 
 GtkWidget *emailLabel, *emailEntry, *signupBtn, *grid;
 
 gchar buffer[10000];
-
-void *chat_write(void *my_client,  GtkLabel *showEmail)
+void *chat_write(void *my_client, GtkWidget *showEmail )
 {   
     char buf[1024] = { 0 };
     int bytes_read;
@@ -42,11 +41,10 @@ void *chat_write(void *my_client,  GtkLabel *showEmail)
         }
    }
 }
-
 void signup_button_clicked(GtkWidget *wid,gpointer data)
  {  
     // Get the text from the email entry 
-    const gchar* emailData = gtk_entry_get_text(GTK_ENTRY(emailEntry)); 
+    gchar* emailData = gtk_entry_get_text(GTK_ENTRY(emailEntry)); 
 
     // Append previous data to current data
     // strcpy(buffer, "hello");
@@ -55,7 +53,7 @@ void signup_button_clicked(GtkWidget *wid,gpointer data)
     strcat(buffer2, "\n");
     strcat(buffer, emailData);
     strcat(buffer, "\n");
-    g_print("%s\n", buffer);
+    g_printf("%s\n", buffer);
 
     if (write(client, buffer2, sizeof(buffer2)) < 0) {
             perror("Uh oh");
@@ -72,7 +70,7 @@ static void activate (GtkApplication* app, gpointer user_data)
  {  
      // Create a new window
     GtkWidget *window;
-    GtkLabel *showEmail; 
+    GtkWidget *showEmail;
     window = gtk_application_window_new (app);
 
     // Set title and size
@@ -94,13 +92,14 @@ static void activate (GtkApplication* app, gpointer user_data)
 
 
     // Send the value when signupBtn is clicked to call signup_button_clicked
-    pid = fork();
+      pid = fork();
         if (pid == 0){
             chat_write(client,showEmail);
         }
         else {
     g_signal_connect(signupBtn,"clicked",G_CALLBACK(signup_button_clicked),showEmail);
         }
+
     // Create a new GTK box
     GtkWidget *box; box = gtk_box_new(GTK_ORIENTATION_VERTICAL,2);
 
@@ -116,6 +115,7 @@ static void activate (GtkApplication* app, gpointer user_data)
     // Display window
     gtk_widget_show_all (window);
  } 
+
 
 
 
@@ -154,6 +154,7 @@ int main(int argc, char **argv)
     char i;
     scanf("%c", &i);
     if (i==y){
+      
             GtkApplication *app;
             int status;
             app = gtk_application_new ("com.hackthedeveloper", G_APPLICATION_FLAGS_NONE);
