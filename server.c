@@ -14,7 +14,7 @@ int client;
 pid_t pid; 
 
 // Create widget for email entry.
-    GtkWidget *showEmail; 
+GtkWidget *showEmail; 
 
 GtkWidget *emailLabel, *emailEntry, *signupBtn, *grid;
 
