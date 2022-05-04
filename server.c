@@ -97,7 +97,7 @@ static void activate (GtkApplication* app, gpointer user_data)
             chat_write(client,showEmail);
         }
         else {
-    g_signal_connect(signupBtn,"clicked",G_CALLBACK(signup_button_clicked),showEmail);
+        g_signal_connect(signupBtn,"clicked",G_CALLBACK(signup_button_clicked),showEmail);
         }
 
     // Create a new GTK box
