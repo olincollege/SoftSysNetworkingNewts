@@ -83,15 +83,6 @@ int main(int argc, char **argv)
       }
    pthread_exit(NULL);
 
-    // while (1) {
-        
-    //     // printf("Vedaant: ");
-        
-    //     // // printf("Sent\n");
-
-        
-    // }
-
     // close connection
     close(client);
     close(s);
