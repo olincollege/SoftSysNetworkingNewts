@@ -4,4 +4,4 @@
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
 
-int server();
+int GUI_server();
