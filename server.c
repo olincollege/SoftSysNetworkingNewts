@@ -38,16 +38,6 @@ void *chat_write(void *my_client)
    }
    pthread_exit(NULL);
 }
-void *close_sock(void *my_client)
-{
-    int client;
-    client = (int)my_client;
-    char message[100]="I don't want to connect";
-    if (write(client, message, sizeof(message)) < 0) {
-            perror("Uh oh");
-        }
-   pthread_exit(NULL);
-}
 
 
 int main(int argc, char **argv)
