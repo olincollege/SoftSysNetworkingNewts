@@ -8,7 +8,7 @@ char** scan_server()
     int i;
     char addr[19]= {0};
     char name[248] = { 0 };
-
+    printf("Scanning for Devices...\n");
     dev_id = hci_get_route(NULL);
     sock = hci_open_dev( dev_id );
     if (dev_id < 0 || sock < 0) {

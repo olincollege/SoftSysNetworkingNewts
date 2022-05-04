@@ -15,9 +15,14 @@ void *Read(void *s){
     char buf[1024];
     while(1){
         if( read(sock, buf, sizeof(buf)) > 0 ){
+            if (strcmp(buf, "No connect") == 0){
+                printf("Connection denied\n");
+                pthread_exit(NULL);
+            }
             printf("Vedaant: %s", buf);}
     }
     pthread_exit(NULL);
+    exit(1);
 }
 void *Write(void *s){
      int sock;
@@ -26,7 +31,7 @@ void *Write(void *s){
     while(1){
     fgets(message,sizeof(message), stdin);
     if( write(sock, message, sizeof(message)) < 0 ){ 
-        perror("uh oh");}
+        perror("uh 1oh");}
    
     }
     pthread_exit(NULL);
@@ -56,22 +61,23 @@ int client_connection(char* MAC)
         printf("Connected\n");
         pthread_t threads[2];
         int rc;
-        int rc1;
+        //int rc1;
+        rc = pthread_create(&threads[1], NULL, Write, (void*)s);
+      if (rc){
+         printf("ERROR; return code from pthread_create() is %d\n", rc);
+         exit(-1);
+      }
         rc = pthread_create(&threads[0], NULL, Read, (void*)s );
         if (rc){
             printf("ERROR; return code from pthread_create() is %d\n", rc);
             exit(-1);
         }
 
-      rc1 = pthread_create(&threads[1], NULL, Write, (void*)s);
-      if (rc1){
-         printf("ERROR; return code from pthread_create() is %d\n", rc);
-         exit(-1);
-      }
+      
         pthread_exit(NULL);
     }
     if( status < 0 ){ 
-    perror("uh oh");
+    perror("uh 2oh");
     }
     close(s);
 
