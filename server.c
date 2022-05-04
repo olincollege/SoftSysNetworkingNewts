@@ -33,11 +33,12 @@ void *chat_write(void *my_client, GtkWidget *showEmail )
             // strcpy(buffer, "hello");
             strcat(buf, "\n");
             strcat(buffer, buf);
-            strcat(buffer, "\n");
-            g_print("%s\n", buffer);
 
             // Print out the text sent to data to the label emailData
-            gtk_label_set_text(GTK_LABEL(showEmail), (const gchar *) buffer); 
+            printf("here1");
+            gtk_label_set_text(GTK_LABEL(showEmail), (const gchar *) buffer);
+            printf(buffer);
+            printf("here2");
         }
    }
 }
@@ -94,10 +95,10 @@ static void activate (GtkApplication* app, gpointer user_data)
     // Send the value when signupBtn is clicked to call signup_button_clicked
       pid = fork();
         if (pid == 0){
-            chat_write(client,showEmail);
+            g_signal_connect(signupBtn,"clicked",G_CALLBACK(signup_button_clicked),showEmail);
         }
         else {
-        g_signal_connect(signupBtn,"clicked",G_CALLBACK(signup_button_clicked),showEmail);
+            chat_write(client,showEmail);
         }
 
     // Create a new GTK box
