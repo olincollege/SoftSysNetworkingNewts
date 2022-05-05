@@ -81,7 +81,6 @@ void *chat_read(void *my_client)
         bytes_read = read(client, buf, sizeof(buf));
         /* If data is detected, print output */
         if( bytes_read > 0 ) {
-            printf("Charlie: ");
             printf("%s", buf);
         }
    }
@@ -92,6 +91,8 @@ void *chat_read(void *my_client)
 /* Main function to establish connection with client */
 int main(int argc, char **argv)
 {   
+    printf("Waiting on client");
+    
     /* Initialize threads */
     pthread_t thread_a;
     pthread_t thread_b;

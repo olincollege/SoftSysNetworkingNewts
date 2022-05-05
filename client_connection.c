@@ -1,5 +1,29 @@
 #include "client_connection.h"
 
+int s, client;
+/* Set up a signal handler.
+
+   sig: signal number
+   handler: signal handler function
+*/
+int catch_signal(int sig, void (*handler) (int)) {
+    struct sigaction action;
+    action.sa_handler = handler;
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    return sigaction(sig, &action, NULL);
+}
+
+/* Signal handler: Close the socket.
+ */
+void close_socket(int sig)
+{
+    close(client);
+    close(s);
+    printf("\nClosing connection!\n");
+    exit(EXIT_SUCCESS);
+}
+
 /*
 Read data from socket in a thread
 
@@ -15,8 +39,12 @@ void *Read(void *s)
     /* Maximum buffer length is 100 characters */
     char buf[100];
     while(1){
+        /* Close socket if interrupted */
+        catch_signal(SIGINT, close_socket);
+        
         /* Read input from the socket */
         if(read(sock, buf, sizeof(buf)) > 0 ){
+
             /* If the string sent is "No connect" close socket connection */
             if (strcmp(buf, "No connect") == 0){
                 printf("Connection denied\n");
@@ -51,6 +79,9 @@ void *Write(void *s)
         fgets(message, sizeof(message), stdin);
         if(write(sock, message, sizeof(message)) < 0 ){ 
             perror("uh oh");}
+
+        /* Close socket if interrupted */
+        catch_signal(SIGINT, close_socket);
         }
     pthread_exit(NULL);
 }
@@ -66,7 +97,7 @@ int client_connection(char* MAC)
 
     /* Initialize socket */
     struct sockaddr_rc addr = { 0 };
-    int s, status, bytes_read, client;
+    int status, bytes_read;
     printf("Trying to Connect\n");
 
     /* Set message size to 100 */

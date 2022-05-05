@@ -7,7 +7,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <signal.h>
 
-int client_connection();
+int client_connection(char *MAC);
 void *Read(void *s);
 void *Write(void *s);
