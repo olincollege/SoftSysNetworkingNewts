@@ -8,3 +8,5 @@
 #include <stdio.h>
 
 int client_connection();
+void *Read(void *s);
+void *Write(void *s);

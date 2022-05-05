@@ -3,5 +3,8 @@
 #include <sys/socket.h>
 #include <bluetooth/bluetooth.h>
 #include <bluetooth/rfcomm.h>
+#include <stdlib.h>
+#include <gtk/gtk.h>
 
-int GUI_server();
+#include <pthread.h>
+#include <stdio.h>

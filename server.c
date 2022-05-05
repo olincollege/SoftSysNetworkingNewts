@@ -35,7 +35,7 @@ Args:
 */
 void *chat_write(void *my_client)
 {   
-    /* Max message size is 100 */
+    /* Max message size is 100 characters */
     char message[100];
 
     /* Cast client to int pointer */
@@ -49,6 +49,8 @@ void *chat_write(void *my_client)
             perror("Uh oh");
         }
 
+        /* Close socket if interrupted */
+        catch_signal(SIGINT, close_socket);
     }
    pthread_exit(NULL);
 }
@@ -63,8 +65,8 @@ Args:
 */
 void *chat_read(void *my_client)
 {   
-    /* Maximum message buffer size of 1024 */
-    char buf[1024] = { 0 };
+    /* Maximum message buffer size of 100 */
+    char buf[100] = { 0 };
 
     /* Cast client to int pointer */
     int client;
@@ -98,14 +100,13 @@ int main(int argc, char **argv)
 
     /* Initialize socket */
     struct sockaddr_rc loc_addr = { 0 }, rem_addr = { 0 };
-    char buf[1024] = { 0 };
+    char buf[100] = { 0 };
     int bytes_read;
     socklen_t opt = sizeof(rem_addr);
 
     /* Set message size to 100 */
     char message[100];
 
-    int status = 0;
     /* Allocate socket */
     s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 
@@ -130,7 +131,6 @@ int main(int argc, char **argv)
     scanf("%c", &i);
 
     if (i=='y'){
-        /* Handle break and exit program */
         /* Create threads for reading from and writing to other user */
         rc = pthread_create(&thread_a, NULL, chat_write, (void *) (intptr_t) client);
         if (rc){

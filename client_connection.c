@@ -1,81 +1,110 @@
 #include "client_connection.h"
 
-void *Read(void *s){
-    //Read from Socket
+/*
+Read data from socket in a thread
+
+args: 
+    s: A void pointer to an integer storing the socket number.
+ */
+void *Read(void *s)
+{
+    /* Cast socket to int pointer */
     int sock;
     sock = (int)s;
-    char buf[1024];
+
+    /* Maximum buffer length is 100 characters */
+    char buf[100];
     while(1){
-        //Read input from the socket
+        /* Read input from the socket */
         if(read(sock, buf, sizeof(buf)) > 0 ){
-            //If the string sent is "No connect" close socket connection
+            /* If the string sent is "No connect" close socket connection */
             if (strcmp(buf, "No connect") == 0){
                 printf("Connection denied\n");
                 pthread_exit(NULL);
                 exit(1);
             }
             char *b = &buf[2]; //Remove first two characters
-            printf("%s",b); //Print read output to standard output terminal
+            /* Print received message. */
+            printf("%s", b);
             }
     }
     pthread_exit(NULL);
-    
 }
-void *Write(void *s){
+
+
+/*
+Write data to socket in a thread
+
+args: 
+    s: A void pointer to an integer storing the socket number.
+ */
+void *Write(void *s)
+{
+    /* Cast socket to int pointer */
     int sock;
     sock = (int)s;
+
+    /* Max message size is 100 characters */
     char message[100];
+
+    /* Wait for user input, and write it to client. */
     while(1){
-        //Get message from standard input from user
         fgets(message, sizeof(message), stdin);
-        //Write message to socket output
         if(write(sock, message, sizeof(message)) < 0 ){ 
-            perror("uh 1oh");}
+            perror("uh oh");}
         }
-        pthread_exit(NULL);
+    pthread_exit(NULL);
 }
 
+/* Communicates to the server using a socket. */
+int client_connection(char* MAC)
+{   
+    
+    /* Initialize threads */
+    pthread_t thread_a;
+    pthread_t thread_b;
+    int rc;
 
-int client_connection(char* MAC){
+    /* Initialize socket */
     struct sockaddr_rc addr = { 0 };
     int s, status, bytes_read, client;
+    printf("Trying to Connect\n");
+
+    /* Set message size to 100 */
     char message[100];
 
-    // allocate a socket
+    /* Allocate socket */
     s = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM);
 
-    // set the connection parameters (who to connect to)
+    /* set the connection parameters (who to connect to) */
     addr.rc_family = AF_BLUETOOTH;
     addr.rc_channel = (uint8_t) 1;
     str2ba( MAC, &addr.rc_bdaddr );
 
-    printf("Trying to Connect\n");
-    // connect to server
+    /* Connect to server */
     status = connect(s, (struct sockaddr *)&addr, sizeof(addr));
     
-    // send a message
+    /* On successful connection begin communication (pending server approval) */
     if( status == 0 ) {
-        printf("Connected\n");
-        pthread_t threads[2];
-        int rc;
-        int rc1;
-        //Create thread for writing data to socket
-        rc = pthread_create(&threads[1], NULL, Write, (void*)s);
+        printf("Pending server approval\n");
+        
+        /* Create threads for reading from and writing to other user */
+        rc = pthread_create(&thread_a, NULL, Write, (void*)s);
         if (rc){
             printf("ERROR; return code from pthread_create() is %d\n", rc);
             exit(-1);
         }
-        //Create thread for reading data from socket
-        rc1 = pthread_create(&threads[0], NULL, Read, (void*)s );
-        if (rc1){
-            printf("ERROR; return code from pthread_create() is %d\n", rc1);
+        rc = pthread_create(&thread_b, NULL, Read, (void*)s );
+        if (rc){
+            printf("ERROR; return code from pthread_create() is %d\n", rc);
             exit(-1);
         }
         pthread_exit(NULL);
     }
     if( status < 0 )
         perror("uh oh");
-
+    
+    /* Close connection */
     close(s);
     return 0;
 }
