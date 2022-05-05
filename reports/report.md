@@ -7,7 +7,7 @@ The goal of our project was to gain experience in network programming in C by cr
 **Charlie:** My primary goal was to learn more about network communication protocols, and learn about how wireless transmission protocols like WiFi and Bluetooth work. I also want to learn more about the security of wireless transmission protocols and how trust can be established in a world where wireless transmissions can be viewed. In addition, I wanted to build a project that I could potentially see having real world impact because I feel more motivated by working on novel problems and solutions since I am actually contributing something to the world.
  
 ## What we did:
-[Link to Video Demostration](https://youtu.be/16APHLGk7Kw)<br>
+[Link to Video demonstration](https://youtu.be/16APHLGk7Kw)<br>
 We implemented a client-server Bluetooth chat interface that would allow users to communicate without the need for networking infrastructure like routers. We tried to make our client and server roles as peer-to-peer as possible, but there were still some differences in the roles, and our code structure can broadly be understood by looking at the client and server side individually:
  
 ### Client
