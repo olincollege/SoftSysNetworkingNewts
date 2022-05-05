@@ -10,7 +10,7 @@ void *Read(void *s)
 {
     /* Cast socket to int pointer */
     int sock;
-    sock = (int)s;
+    sock = (intptr_t) s;
 
     /* Maximum buffer length is 100 characters */
     char buf[100];
@@ -23,9 +23,8 @@ void *Read(void *s)
                 pthread_exit(NULL);
                 exit(1);
             }
-            char *b = &buf[2]; //Remove first two characters
             /* Print received message. */
-            printf("%s", b);
+            printf("%s", buf);
             }
     }
     pthread_exit(NULL);
@@ -42,7 +41,7 @@ void *Write(void *s)
 {
     /* Cast socket to int pointer */
     int sock;
-    sock = (int)s;
+    sock = (intptr_t) s;
 
     /* Max message size is 100 characters */
     char message[100];
@@ -89,12 +88,12 @@ int client_connection(char* MAC)
         printf("Pending server approval\n");
         
         /* Create threads for reading from and writing to other user */
-        rc = pthread_create(&thread_a, NULL, Write, (void*)s);
+        rc = pthread_create(&thread_a, NULL, Write, (void *) (intptr_t) s);
         if (rc){
             printf("ERROR; return code from pthread_create() is %d\n", rc);
             exit(-1);
         }
-        rc = pthread_create(&thread_b, NULL, Read, (void*)s );
+        rc = pthread_create(&thread_b, NULL, Read, (void *) (intptr_t) s );
         if (rc){
             printf("ERROR; return code from pthread_create() is %d\n", rc);
             exit(-1);

@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 int client_connection();
 void *Read(void *s);
